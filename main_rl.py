@@ -7,6 +7,19 @@ from rlenv import PegInHoleGymEnv
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import argparse
+
+parser = argparse.ArgumentParser(description='Arguments')
+parser.add_argument('-r', '--run', default='test', type=str, metavar='N', choices=['train', 'test'],
+                    help='Do you want to run trining or testing (default: test)')
+parser.add_argument('--policy', default=300, type=str, metavar='N', choices=['sac', 'ppo', 'ac2'],
+                    help='Choose which policy options are "sac" or "ppo" or "a2c" (default: sac)')
+parser.add_argument('--timesteps', default=250000, type=int, metavar='N',
+                    help='(default: 250000)')
+parser.add_argument('--save_frec', default='10000', type=int, metavar='N',
+                    help='Freceancy of saving (default: 10000)')
+args = parser.parse_args()
+
 
 #train model 
 def train(agent_name="ppo", total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
@@ -153,13 +166,16 @@ def plot_reward_data():
 
 if __name__ == "__main__":
     # Choose agent_name = "sac" or "ppo" or "a2c"
-    agent_name = "sac"
+    agent_name = args.policy
 
-    # # Train the RL model
-    # # train(agent_name=agent_name, total_timesteps=250000, save_freq=10000)
+    if args.run == 'train':
+        # # Train the RL model
+        train(agent_name=agent_name, total_timesteps=args.timestep, save_freq=args.save_freq)
+    elif args.run == 'test':
+        # Test the trained RL model
+        test_rl_model(agent_name)
 
-    # Test the trained RL model
-    test_rl_model(agent_name)
-
+    print(args)
     # # Plot the reward training graph
-    # plot_reward_data()
+    plot_reward_data()
+
