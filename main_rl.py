@@ -1,5 +1,5 @@
 import os
-from stable_baselines3 import PPO, SAC, A2C
+from stable_baselines3 import PPO, SAC, A2C, TD3
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import CheckpointCallback
@@ -44,6 +44,10 @@ def train(agent_name="ppo", total_timesteps=100_000, save_freq=10_000, save_path
     elif agent_name == "a2c":
         model_class = A2C
         policy = "MultiInputPolicy"
+        
+    elif agent_name == "td3":
+        model_class = TD3
+        policy = "MultiInputPolicy"
     else:
         raise ValueError(f"Unsupported agent: {agent_name}")
 
@@ -76,6 +80,9 @@ def test_rl_model(agent_name):
         policy = "MultiInputPolicy"
     elif agent_name == "a2c":
         model_class = A2C
+        policy = "MultiInputPolicy"
+    elif agent_name == "td3":
+        model_class = TD3
         policy = "MultiInputPolicy"
     else:
         raise ValueError(f"Unsupported agent: {agent_name}")
@@ -130,6 +137,7 @@ def plot_reward_data():
         "SAC": "monitor_sac.csv",
         "PPO": "monitor_ppo.csv",
         "A2C": "monitor_a2c.csv",
+        "TD3": "monitor_td3.csv"
     }
 
     plt.figure(figsize=(8, 5))
