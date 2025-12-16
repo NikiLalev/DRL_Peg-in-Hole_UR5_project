@@ -1,5 +1,6 @@
 import os
 from stable_baselines3 import PPO, SAC, A2C, TD3
+from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.callbacks import CheckpointCallback
@@ -35,6 +36,8 @@ def train(agent_name="ppo", total_timesteps=100_000, save_freq=10_000, save_path
 
     # Choose the algorithm
     agent_name = agent_name.lower()
+    model_kwargs = {}
+    
     if agent_name == "ppo":
         model_class = PPO
         policy = "MultiInputPolicy"
@@ -48,11 +51,16 @@ def train(agent_name="ppo", total_timesteps=100_000, save_freq=10_000, save_path
     elif agent_name == "td3":
         model_class = TD3
         policy = "MultiInputPolicy"
+        
+        n_actions = env.action_space.shape[-1]
+        action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions))
+        model_kwargs['action_noise'] = action_noise
+
     else:
         raise ValueError(f"Unsupported agent: {agent_name}")
 
     # Create the model
-    model = model_class(policy, env, verbose=1, device="cuda", tensorboard_log=log_dir)  
+    model = model_class(policy, env, verbose=1, device="cuda", tensorboard_log=log_dir, **model_kwargs)  
 
     # Create checkpoint callback
     checkpoint_callback = CheckpointCallback(save_freq=save_freq, save_path=save_path,
