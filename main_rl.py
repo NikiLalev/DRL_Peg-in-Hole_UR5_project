@@ -12,12 +12,12 @@ import argparse
 parser = argparse.ArgumentParser(description='Arguments')
 parser.add_argument('-r', '--run', default='test', type=str, choices=['train', 'test', 'plot'],
                     help='Do you want to run trining or testing (default: test)')
-parser.add_argument('--policy', default='sac', type=str, choices=['sac', 'ppo', 'ac2', 'td3'],
+parser.add_argument('-p','--policy', default='sac', type=str, choices=['sac', 'ppo', 'ac2', 'td3'],
                     help='Choose which policy options are "sac" or "ppo" or "a2c" (default: sac)')
 parser.add_argument('--timesteps', default=250000, type=int,
                     help='(default: 250000)')
-parser.add_argument('--save_frec', default='10000', type=int,
-                    help='Freceancy of saving (default: 10000)')
+parser.add_argument('--save_freq', default='10000', type=int,
+                    help='Freqeancy of saving (default: 10000)')
 args = parser.parse_args()
 
 
