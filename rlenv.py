@@ -14,6 +14,7 @@ class PegInHoleGymEnv(gym.Env):
     def __init__(self, shape_type='circle', reward_typ = 'old'):
         super().__init__()
         self.shape_type = shape_type
+        self.reward_typ = reward_typ
         self.physics_client = p.connect(p.GUI)  # Connect to PyBullet in GUI mode
         
         p.configureDebugVisualizer(p.COV_ENABLE_SHADOWS, 0)
@@ -272,7 +273,7 @@ class PegInHoleGymEnv(gym.Env):
     #     return reward, dist_xy, dist_z
     
     def _compute_reward(self):
-        if reward_typ == 'old' :
+        if self.reward_typ == 'old' :
             # Compute reward based on distance to target
             eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
             dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
@@ -284,7 +285,7 @@ class PegInHoleGymEnv(gym.Env):
                 reward += 100.0  # High reward for successful insertion
 
             return reward, dist_xy, dist_z
-        elif reward_typ == 'new':
+        elif self.reward_typ == 'new':
             eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
             # XY distance to hole center
             dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
@@ -324,7 +325,7 @@ class PegInHoleGymEnv(gym.Env):
         return self._check_inserted()
 
     def _check_inserted(self):
-        if reward_typ == 'old':
+        if self.reward_typ == 'old':
             # Check if peg is successfully inserted into the hole
             
             eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
@@ -332,7 +333,7 @@ class PegInHoleGymEnv(gym.Env):
             close_enough = dist_xy < 0.01 and (abs(eef_pos[2] - self.target_pos[2]) < 0.1)
             return close_enough
 
-        elif reward_typ == 'new':
+        elif self.reward_typ == 'new':
             eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
             dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
 
