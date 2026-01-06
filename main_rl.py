@@ -80,6 +80,9 @@ def train(agent_name="ppo", shape='circle', total_timesteps=100_000, save_freq=1
     # Train the model and save checkpoints
     model.learn(total_timesteps=total_timesteps, callback=checkpoint_callback)
 
+    # Save data for IQL
+    model.save_replay_buffer(os.path.join(save_path, "final_replay_buffer.pkl"))
+
     # Save the final model after training
     model.save(os.path.join(save_path, f"{agent_name}_final_model"))
 
