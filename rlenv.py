@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import math
 
 class PegInHoleGymEnv(gym.Env):
-    def __init__(self, shape_type='circle'):
+    def __init__(self, shape_type='circle', reward_typ = 'old'):
         super().__init__()
         self.shape_type = shape_type
         self.physics_client = p.connect(p.GUI)  # Connect to PyBullet in GUI mode
@@ -272,67 +272,81 @@ class PegInHoleGymEnv(gym.Env):
     #     return reward, dist_xy, dist_z
     
     def _compute_reward(self):
-        eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
-        # XY distance to hole center
-        dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
-        # Z distance to surface (target_pos[2] is the surface height)
-        dist_z = eef_pos[2] - self.target_pos[2]
-        
-        # 1. Basic Approach Reward (Guide it to the area)
-        reward = -dist_xy * 10 
-
-        # 2. Alignment Bonus (Touching/hovering over the "top of the box")
-        # If we are within 2cm of center, give a small reward
-        if dist_xy < 0.02:
-            reward += 1.0
-        
-        # 3. Insertion Stages
-        # If aligned (xy < 0.02) AND below surface (dist_z < 0)
-        if dist_xy < 0.02 and dist_z < 0:
-            # We are inside the hole!
+        if reward_typ == 'old' :
+            # Compute reward based on distance to target
+            eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
+            dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
+            dist_z = abs(eef_pos[2] - self.target_pos[2])
             
-            # A. "Passing the threshold" reward
-            # dist_z is negative here, so -dist_z is positive depth
-            depth = -dist_z 
+            reward = 10 * (-dist_xy - 0.5 * dist_z)
+
+            if self._check_inserted():
+                reward += 100.0  # High reward for successful insertion
+
+            return reward, dist_xy, dist_z
+        elif reward_typ == 'new':
+            eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
+            # XY distance to hole center
+            dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
+            # Z distance to surface (target_pos[2] is the surface height)
+            dist_z = eef_pos[2] - self.target_pos[2]
             
-            # Big multiplier for depth to encourage going deeper
-            # e.g., if depth is 0.05 (5cm), reward adds +50.0
-            reward += (depth * 1000) 
+            # 1. Basic Approach Reward (Guide it to the area)
+            reward = -dist_xy * 10 
 
-        # 4. Final Completion Reward
-        # We rely on _check_inserted to define the "Win" state
-        if self._check_inserted():
-            reward += 200.0  # Massive bonus for finishing
+            # 2. Alignment Bonus (Touching/hovering over the "top of the box")
+            # If we are within 2cm of center, give a small reward
+            if dist_xy < 0.02:
+                reward += 1.0
+            
+            # 3. Insertion Stages
+            # If aligned (xy < 0.02) AND below surface (dist_z < 0)
+            if dist_xy < 0.02 and dist_z < 0:
+                # We are inside the hole!
+                
+                # A. "Passing the threshold" reward
+                # dist_z is negative here, so -dist_z is positive depth
+                depth = -dist_z 
+                
+                # Big multiplier for depth to encourage going deeper
+                # e.g., if depth is 0.05 (5cm), reward adds +50.0
+                reward += (depth * 1000) 
 
-        return reward, dist_xy, dist_z
+            # 4. Final Completion Reward
+            # We rely on _check_inserted to define the "Win" state
+            if self._check_inserted():
+                reward += 200.0  # Massive bonus for finishing
+
+            return reward, dist_xy, dist_z
 
     def _check_done(self):
         # Check if task is done
         return self._check_inserted()
 
-    # def _check_inserted(self):
-    #     # Check if peg is successfully inserted into the hole
-    #     eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
-    #     dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
-    #     close_enough = dist_xy < 0.01 and (abs(eef_pos[2] - self.target_pos[2]) < 0.1)
-    #     return close_enough
-    
     def _check_inserted(self):
+        if reward_typ == 'old':
+            # Check if peg is successfully inserted into the hole
+            
+            eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
+            dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
+            close_enough = dist_xy < 0.01 and (abs(eef_pos[2] - self.target_pos[2]) < 0.1)
+            return close_enough
 
-        eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
-        dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
+        elif reward_typ == 'new':
+            eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
+            dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
 
-        # Current Z vs Target Z (Surface)
-        current_z = eef_pos[2]
-        surface_z = self.target_pos[2]
+            # Current Z vs Target Z (Surface)
+            current_z = eef_pos[2]
+            surface_z = self.target_pos[2]
 
-        # Success Criteria:
-        # 1. XY is very precise (within 1cm)
-        # 2. Z is AT LEAST 5cm below the surface (depth requirement)
-        xy_aligned = dist_xy < 0.01
-        deep_enough = current_z < (surface_z - 0.05) 
+            # Success Criteria:
+            # 1. XY is very precise (within 1cm)
+            # 2. Z is AT LEAST 5cm below the surface (depth requirement)
+            xy_aligned = dist_xy < 0.01
+            deep_enough = current_z < (surface_z - 0.05) 
 
-        return xy_aligned and deep_enough
+            return xy_aligned and deep_enough
 
     def render(self):
         pass

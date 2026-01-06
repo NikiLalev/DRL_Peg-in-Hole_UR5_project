@@ -22,11 +22,13 @@ parser.add_argument('--save_freq', default='10000', type=int,
                     help='Freqeancy of saving (default: 10000)')
 parser.add_argument('--shape', default='circle', type=str, choices=['circle', 'square', 'triangle', 'hexagon'],
                     help='Shape of the peg/hole (default: circle)')
+parser.add_argument('--reward', default='old', type=str, choices=['old', 'new'],
+                    help='reward')
 args = parser.parse_args()
 
 
 #train model 
-def train(agent_name="ppo", shape='circle', total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
+def train(agent_name="ppo", shape='circle', reward="old", total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
     
     # Create specific save directory: checkpoints/agent_name/shape/
     save_path = os.path.join(save_path, agent_name, shape)
@@ -39,7 +41,7 @@ def train(agent_name="ppo", shape='circle', total_timesteps=100_000, save_freq=1
         os.makedirs(log_dir)
 
     # Create the environment and wrap it with Monitor to log performance
-    env = PegInHoleGymEnv(shape_type=shape)
+    env = PegInHoleGymEnv(shape_type=shape, reward_typ=reward)
     env = Monitor(env, log_dir)  # Monitor the environment and store logs in the specified directory
 
     # Choose the algorithm
@@ -200,7 +202,7 @@ if __name__ == "__main__":
 
     if args.run == 'train':
         # # Train the RL model
-        train(agent_name=agent_name, shape=args.shape, total_timesteps=args.timesteps, save_freq=args.save_freq)
+        train(agent_name=agent_name, shape=args.shape, reward=args.reward, total_timesteps=args.timesteps, save_freq=args.save_freq)
 
     elif args.run == 'test':
         # Test the trained RL model
