@@ -188,7 +188,7 @@ if __name__ == "__main__":
 
     if args.run == 'train':
         # # Train the RL model
-        train(agent_name=agent_name, total_timesteps=args.timesteps, save_freq=args.save_freq)
+        train(agent_name=agent_name, shape=args.shape, total_timesteps=args.timesteps, save_freq=args.save_freq)
 
     elif args.run == 'test':
         # Test the trained RL model
