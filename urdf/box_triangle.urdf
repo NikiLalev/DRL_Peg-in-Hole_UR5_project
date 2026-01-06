@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <robot name="hole_box">
 
-  <!-- Link representing the hole box with square hole sides of 0.06 -->
+  <!-- Link representing the hole box with triangular hole sides of ~0.52 (you get it when you enclose a equilateral triangle inside a circle of diameter 0.6) -->
   <link name="hole_box_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 1.5708"/>
       <geometry>
-        <mesh filename="/urdf/square.stl" scale="1 1 1"/>
+        <mesh filename="/urdf/triangle.stl" scale="1 1 1"/>
       </geometry>
       <material name="gray">
         <color rgba="0.5 0.5 0.5 1.0"/> 
@@ -16,7 +16,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 1.5708"/>
       <geometry>
-        <mesh filename="/urdf/square.stl" scale="1 1 1"/>
+        <mesh filename="/urdf/triangle.stl" scale="1 1 1"/>
       </geometry>
     </collision>
 

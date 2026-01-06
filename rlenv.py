@@ -61,6 +61,8 @@ class PegInHoleGymEnv(gym.Env):
         # Load the UR5 robot based on shape
         if self.shape_type == "square":
             robot_file = "./urdf/ur5_robotiq_85_square.urdf"
+        elif self.shape_type == "triangle":
+            robot_file = "./urdf/ur5_robotiq_85_triangle.urdf"
         else: # default to circle
             robot_file = "./urdf/ur5_robotiq_85.urdf"
 
@@ -124,6 +126,8 @@ class PegInHoleGymEnv(gym.Env):
         # Load specific box URDF
         if self.shape_type == "square":
             self.hole_id = p.loadURDF("./urdf/box_square.urdf", self.target_pos, hole_orn)
+        elif self.shape_type == "triangle":
+            self.hole_id = p.loadURDF("./urdf/box_triangle.urdf", self.target_pos, hole_orn)
         else:
             self.hole_id = p.loadURDF("./urdf/box.urdf", self.target_pos, hole_orn)
 

@@ -19,7 +19,7 @@ parser.add_argument('--timesteps', default=250000, type=int,
                     help='(default: 250000)')
 parser.add_argument('--save_freq', default='10000', type=int,
                     help='Freqeancy of saving (default: 10000)')
-parser.add_argument('--shape', default='circle', type=str, choices=['circle', 'square'],
+parser.add_argument('--shape', default='circle', type=str, choices=['circle', 'square', 'triangle'],
                     help='Shape of the peg/hole (default: circle)')
 args = parser.parse_args()
 
