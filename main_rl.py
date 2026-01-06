@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import argparse
+import datetime
 
 parser = argparse.ArgumentParser(description='Arguments')
 parser.add_argument('-r', '--run', default='test', type=str, choices=['train', 'test', 'plot'],
@@ -27,6 +28,11 @@ args = parser.parse_args()
 #train model 
 def train(agent_name="ppo", shape='circle', total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
     
+    # Create specific save directory: checkpoints/agent_name/shape/
+    save_path = os.path.join(save_path, agent_name, shape)
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+        
     # Create a directory to store the log files if it doesn't exist
     log_dir = "./logs"
     if not os.path.exists(log_dir):
@@ -64,9 +70,12 @@ def train(agent_name="ppo", shape='circle', total_timesteps=100_000, save_freq=1
     # Create the model
     model = model_class(policy, env, verbose=1, device="cuda", tensorboard_log=log_dir, **model_kwargs)  
 
+    # For saving with timestamp
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
     # Create checkpoint callback
     checkpoint_callback = CheckpointCallback(save_freq=save_freq, save_path=save_path,
-                                             name_prefix=f"{agent_name}_model")
+                                             name_prefix=timestamp)
 
     # Train the model and save checkpoints
     model.learn(total_timesteps=total_timesteps, callback=checkpoint_callback)
