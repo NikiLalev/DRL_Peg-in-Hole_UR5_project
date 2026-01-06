@@ -11,8 +11,9 @@ import matplotlib.pyplot as plt
 import math
 
 class PegInHoleGymEnv(gym.Env):
-    def __init__(self):
+    def __init__(self, shape_type='circle'):
         super().__init__()
+        self.shape_type = shape_type
         self.physics_client = p.connect(p.GUI)  # Connect to PyBullet in GUI mode
         
         p.configureDebugVisualizer(p.COV_ENABLE_SHADOWS, 0)
@@ -57,9 +58,15 @@ class PegInHoleGymEnv(gym.Env):
         self.table_id = p.loadURDF("table/table.urdf", [0.4, 0, 0], p.getQuaternionFromEuler([0, 0, np.pi / 2]))
 
     def _load_robot(self):
-        # Load the UR5 robot with a Robotiq gripper
-        self.robot_id = p.loadURDF("./urdf/ur5_robotiq_85.urdf", [0, 0, 0.62],
+        # Load the UR5 robot based on shape
+        if self.shape_type == "square":
+            robot_file = "./urdf/ur5_robotiq_85_square.urdf"
+        else: # default to circle
+            robot_file = "./urdf/ur5_robotiq_85.urdf"
+
+        self.robot_id = p.loadURDF(robot_file, [0, 0, 0.62],
                                    p.getQuaternionFromEuler([0, 0, 0]), useFixedBase=True)
+        
         self.eef_link_index = 6  # End-effector link index
         num_joints = p.getNumJoints(self.robot_id)
         for i in range(num_joints):
@@ -112,7 +119,13 @@ class PegInHoleGymEnv(gym.Env):
         y = random.uniform(0, 0.1)
         z = 0.65
         self.target_pos = [x, y, z]
-        self.hole_id = p.loadURDF("./urdf/box.urdf", self.target_pos, p.getQuaternionFromEuler([0, 0, 0]))
+        hole_orn = p.getQuaternionFromEuler([0, 0, 0]) 
+
+        # Load specific box URDF
+        if self.shape_type == "square":
+            self.hole_id = p.loadURDF("./urdf/box_square.urdf", self.target_pos, hole_orn)
+        else:
+            self.hole_id = p.loadURDF("./urdf/box.urdf", self.target_pos, hole_orn)
 
         return self._get_obs(), {}
 

@@ -19,11 +19,13 @@ parser.add_argument('--timesteps', default=250000, type=int,
                     help='(default: 250000)')
 parser.add_argument('--save_freq', default='10000', type=int,
                     help='Freqeancy of saving (default: 10000)')
+parser.add_argument('--shape', default='circle', type=str, choices=['circle', 'square'],
+                    help='Shape of the peg/hole (default: circle)')
 args = parser.parse_args()
 
 
 #train model 
-def train(agent_name="ppo", total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
+def train(agent_name="ppo", shape='circle', total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
     
     # Create a directory to store the log files if it doesn't exist
     log_dir = "./logs"
@@ -31,7 +33,7 @@ def train(agent_name="ppo", total_timesteps=100_000, save_freq=10_000, save_path
         os.makedirs(log_dir)
 
     # Create the environment and wrap it with Monitor to log performance
-    env = PegInHoleGymEnv()
+    env = PegInHoleGymEnv(shape_type=shape)
     env = Monitor(env, log_dir)  # Monitor the environment and store logs in the specified directory
 
     # Choose the algorithm
