@@ -11,14 +11,14 @@ import matplotlib.pyplot as plt
 import math
 
 class PegInHoleGymEnv(gym.Env):
-    def __init__(self, shape_type='circle', reward_typ = 'old', render_mode=True):
+    def __init__(self, shape_type='circle', reward_typ = 'old', render_mode='GUI'):
         super().__init__()
         self.shape_type = shape_type
         self.reward_typ = reward_typ
         self.render_mode = render_mode
-        if self.render_mode:
+        if self.render_mode == 'GUI':
             self.physics_client = p.connect(p.GUI)  # Connect to PyBullet in GUI mode
-        else:
+        elif self.render_mode == 'DIRECT':
             self.physics_client = p.connect(p.DIRECT)  # Connect to PyBullet in DIRECT mode (no GUI)
         
         p.configureDebugVisualizer(p.COV_ENABLE_SHADOWS, 0)

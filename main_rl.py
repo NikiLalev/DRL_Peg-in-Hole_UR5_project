@@ -24,12 +24,13 @@ parser.add_argument('--shape', default='circle', type=str, choices=['circle', 's
                     help='Shape of the peg/hole (default: circle)')
 parser.add_argument('--reward', default='old', type=str, choices=['old', 'new'],
                     help='reward')
-parser.add_argument("--render", default=True, type=bool, help="Render the pybullet environment")
+parser.add_argument("--render", default="GUI", type=str, choices=['GUI', 'DIRECT'], 
+                    help="Render the pybullet environment")
 args = parser.parse_args()
 
 
 #train model 
-def train(agent_name="ppo", shape='circle', reward="old", render=True, total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
+def train(agent_name="ppo", shape='circle', reward="old", render='GUI', total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
     
     # Create specific save directory: checkpoints/agent_name/shape/
     save_path = os.path.join(save_path, agent_name, shape)
