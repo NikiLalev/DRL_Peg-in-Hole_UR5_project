@@ -6,12 +6,12 @@ def export_npz(model_path, rb_path, out_path):
     model.load_replay_buffer(rb_path)
 
     rb = model.replay_buffer
-
-    obs = rb.observations
-    next_obs = rb.next_observations
-    actions = rb.actions
-    rewards = rb.rewards.reshape(-1)
-    dones = rb.dones.reshape(-1).astype(np.float32)
+    
+    obs = rb.observations["cam_image"]          # (N, 100, 100, 1), uint8
+    next_obs = rb.next_observations["cam_image"]
+    actions = rb.actions                        # (N, 3), float32
+    rewards = rb.rewards.reshape(-1)            # (N,)
+    dones = rb.dones.reshape(-1).astype("float32")
 
     np.savez(
         out_path,
@@ -22,7 +22,7 @@ def export_npz(model_path, rb_path, out_path):
         terminals=dones,
     )
     print("Saved:", out_path)
-    
+
     print("observations:", obs.shape)
     print("actions:", actions.shape)
     print("rewards:", rewards.shape)
