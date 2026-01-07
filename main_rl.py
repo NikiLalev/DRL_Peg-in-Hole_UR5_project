@@ -91,9 +91,9 @@ def train(agent_name="ppo", shape='circle', reward="old", total_timesteps=100_00
     return model, env
 
 #test model 1000 times episode
-def test_rl_model(agent_name):
+def test_rl_model(agent_name, shape='circle'):
     # Create the environment
-    env = PegInHoleGymEnv()
+    env = PegInHoleGymEnv(shape_type=shape)
 
     # Choose the algorithm
     if agent_name == "ppo":
@@ -113,7 +113,7 @@ def test_rl_model(agent_name):
 
     # Load the trained model
     model = model_class(policy, env, verbose=1, device="cuda")
-    model = model.load(f"./checkpoints/{agent_name}_model_160000_steps")
+    model = model.load(f"./checkpoints/{agent_name}/{shape}/2026-01-06_16-50-53_150000_steps")
 
     success_count = 0
     failure_count = 0
@@ -206,7 +206,7 @@ if __name__ == "__main__":
 
     elif args.run == 'test':
         # Test the trained RL model
-        test_rl_model(agent_name)
+        test_rl_model(agent_name, shape=args.shape)
 
     elif args.run == 'plot':
         # # Plot the reward training graph
