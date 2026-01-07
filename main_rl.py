@@ -24,11 +24,13 @@ parser.add_argument('--shape', default='circle', type=str, choices=['circle', 's
                     help='Shape of the peg/hole (default: circle)')
 parser.add_argument('--reward', default='old', type=str, choices=['old', 'new'],
                     help='reward')
+parser.add_argument("--render", default="GUI", type=str, choices=['GUI', 'DIRECT'], 
+                    help="Render the pybullet environment")
 args = parser.parse_args()
 
 
 #train model 
-def train(agent_name="ppo", shape='circle', reward="old", total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
+def train(agent_name="ppo", shape='circle', reward="old", render='GUI', total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
     
     # Create specific save directory: checkpoints/agent_name/shape/
     save_path = os.path.join(save_path, agent_name, shape)
@@ -41,7 +43,7 @@ def train(agent_name="ppo", shape='circle', reward="old", total_timesteps=100_00
         os.makedirs(log_dir)
 
     # Create the environment and wrap it with Monitor to log performance
-    env = PegInHoleGymEnv(shape_type=shape, reward_typ=reward)
+    env = PegInHoleGymEnv(shape_type=shape, reward_typ=reward, render_mode=render)
     env = Monitor(env, log_dir)  # Monitor the environment and store logs in the specified directory
 
     # Choose the algorithm
@@ -77,23 +79,23 @@ def train(agent_name="ppo", shape='circle', reward="old", total_timesteps=100_00
 
     # Create checkpoint callback
     checkpoint_callback = CheckpointCallback(save_freq=save_freq, save_path=save_path,
-                                             name_prefix=timestamp)
+                                             name_prefix=f"{timestamp}_{reward}")
 
     # Train the model and save checkpoints
     model.learn(total_timesteps=total_timesteps, callback=checkpoint_callback)
 
     # Save data for IQL
-    model.save_replay_buffer(os.path.join(save_path, "final_replay_buffer.pkl"))
+    model.save_replay_buffer(os.path.join(save_path, f"{timestamp}_{agent_name}_final_replay_buffer.pkl"))
 
     # Save the final model after training
-    model.save(os.path.join(save_path, f"{agent_name}_final_model"))
+    model.save(os.path.join(save_path, f"{timestamp}_{agent_name}_final_model"))
 
     return model, env
 
 #test model 1000 times episode
-def test_rl_model(agent_name):
+def test_rl_model(agent_name, shape='circle'):
     # Create the environment
-    env = PegInHoleGymEnv()
+    env = PegInHoleGymEnv(shape_type=shape)
 
     # Choose the algorithm
     if agent_name == "ppo":
@@ -113,7 +115,7 @@ def test_rl_model(agent_name):
 
     # Load the trained model
     model = model_class(policy, env, verbose=1, device="cuda")
-    model = model.load(f"./checkpoints/{agent_name}_model_160000_steps")
+    model = model.load(f"./checkpoints/{agent_name}/circle/2026-01-06_16-50-53_150000_steps")
 
     success_count = 0
     failure_count = 0
@@ -202,11 +204,11 @@ if __name__ == "__main__":
 
     if args.run == 'train':
         # # Train the RL model
-        train(agent_name=agent_name, shape=args.shape, reward=args.reward, total_timesteps=args.timesteps, save_freq=args.save_freq)
+        train(agent_name=agent_name, shape=args.shape, reward=args.reward, render=args.render, total_timesteps=args.timesteps, save_freq=args.save_freq)
 
     elif args.run == 'test':
         # Test the trained RL model
-        test_rl_model(agent_name)
+        test_rl_model(agent_name, shape=args.shape)
 
     elif args.run == 'plot':
         # # Plot the reward training graph

@@ -11,11 +11,15 @@ import matplotlib.pyplot as plt
 import math
 
 class PegInHoleGymEnv(gym.Env):
-    def __init__(self, shape_type='circle', reward_typ = 'old'):
+    def __init__(self, shape_type='circle', reward_typ = 'old', render_mode='GUI'):
         super().__init__()
         self.shape_type = shape_type
         self.reward_typ = reward_typ
-        self.physics_client = p.connect(p.GUI)  # Connect to PyBullet in GUI mode
+        self.render_mode = render_mode
+        if self.render_mode == 'GUI':
+            self.physics_client = p.connect(p.GUI)  # Connect to PyBullet in GUI mode
+        elif self.render_mode == 'DIRECT':
+            self.physics_client = p.connect(p.DIRECT)  # Connect to PyBullet in DIRECT mode (no GUI)
         
         p.configureDebugVisualizer(p.COV_ENABLE_SHADOWS, 0)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
@@ -124,7 +128,7 @@ class PegInHoleGymEnv(gym.Env):
         y = random.uniform(0, 0.1)
         z = 0.65
         self.target_pos = [x, y, z]
-        hole_orn = p.getQuaternionFromEuler([0, 0, 0]) 
+        hole_orn = p.getQuaternionFromEuler([0, 0, -1.57079632679])
 
         # Load specific box URDF
         if self.shape_type == "square":
@@ -202,7 +206,11 @@ class PegInHoleGymEnv(gym.Env):
         # Check if robot collides with table or hole, unless close enough to insert
         eef_pos = p.getLinkState(self.robot_id, self.eef_link_index)[0]
         dist_xy = np.linalg.norm(np.array(eef_pos[:2]) - np.array(self.target_pos[:2]))
-        close_enough = dist_xy < 0.03 and (abs(eef_pos[2] - self.target_pos[2]) < 0.15)
+        if self.reward_typ == 'old':
+            close_enough = dist_xy < 0.03 and (abs(eef_pos[2] - self.target_pos[2]) < 0.15)
+        else:
+            # More relaxed so we don't stop the simulation too early
+            close_enough = dist_xy < 0.06 and (eef_pos[2] < self.target_pos[2] + 0.03)
 
         if close_enough:
             return False
@@ -292,31 +300,9 @@ class PegInHoleGymEnv(gym.Env):
             # Z distance to surface (target_pos[2] is the surface height)
             dist_z = eef_pos[2] - self.target_pos[2]
             
-            # 1. Basic Approach Reward (Guide it to the area)
-            reward = -dist_xy * 10 
-
-            # 2. Alignment Bonus (Touching/hovering over the "top of the box")
-            # If we are within 2cm of center, give a small reward
-            if dist_xy < 0.02:
-                reward += 1.0
-            
-            # 3. Insertion Stages
-            # If aligned (xy < 0.02) AND below surface (dist_z < 0)
-            if dist_xy < 0.02 and dist_z < 0:
-                # We are inside the hole!
-                
-                # A. "Passing the threshold" reward
-                # dist_z is negative here, so -dist_z is positive depth
-                depth = -dist_z 
-                
-                # Big multiplier for depth to encourage going deeper
-                # e.g., if depth is 0.05 (5cm), reward adds +50.0
-                reward += (depth * 1000) 
-
-            # 4. Final Completion Reward
-            # We rely on _check_inserted to define the "Win" state
+            reward = -20.0 * dist_xy - 5.0 * dist_z
             if self._check_inserted():
-                reward += 200.0  # Massive bonus for finishing
+                reward += 200.0
 
             return reward, dist_xy, dist_z
 
@@ -342,9 +328,9 @@ class PegInHoleGymEnv(gym.Env):
             surface_z = self.target_pos[2]
 
             # Success Criteria:
-            # 1. XY is very precise (within 1cm)
+            # 1. XY is very precise (within 1.2cm)
             # 2. Z is AT LEAST 5cm below the surface (depth requirement)
-            xy_aligned = dist_xy < 0.01
+            xy_aligned = dist_xy < 0.012
             deep_enough = current_z < (surface_z - 0.05) 
 
             return xy_aligned and deep_enough

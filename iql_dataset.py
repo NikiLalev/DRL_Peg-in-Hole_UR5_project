@@ -32,8 +32,8 @@ def export_npz(model_path, rb_path, out_path):
 
 if __name__ == "__main__":
     export_npz(
-        model_path=".../sac_final_model.zip",
-        rb_path=".../final_replay_buffer.pkl",
-        out_path="peg_in_hole_iql_dataset.npz",
+        model_path="./checkpoints/sac/circle/sac_final_model.zip",
+        rb_path="./checkpoints/sac/circle/final_replay_buffer.pkl",
+        out_path="./checkpoints/sac/circle/peg_in_hole_iql_dataset.npz",
     )
 
