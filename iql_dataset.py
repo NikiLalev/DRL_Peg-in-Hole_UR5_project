@@ -22,6 +22,13 @@ def export_npz(model_path, rb_path, out_path):
         terminals=dones,
     )
     print("Saved:", out_path)
+    
+    print("observations:", obs.shape)
+    print("actions:", actions.shape)
+    print("rewards:", rewards.shape)
+    print("next_observations:", next_obs.shape)
+    print("terminals:", dones.shape)
+
 
 if __name__ == "__main__":
     export_npz(
