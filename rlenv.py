@@ -196,7 +196,7 @@ class PegInHoleGymEnv(gym.Env):
             print("Insertion successful")
             info={"insertion_success": True}
 
-        print(f"Step {self.step_count} | XY distance: {dist_xy:.5f} | Z distance: {dist_z:.5f} | Reward: {reward:.2f}")
+        #print(f"Step {self.step_count} | XY distance: {dist_xy:.5f} | Z distance: {dist_z:.5f} | Reward: {reward:.2f}")
 
         truncated = self.step_count >= self.max_steps
 
