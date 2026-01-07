@@ -31,6 +31,7 @@ args = parser.parse_args()
 
 #train model 
 def train(agent_name="ppo", shape='circle', reward="old", render='GUI', total_timesteps=100_000, save_freq=10_000, save_path="./checkpoints/"):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     
     # Create specific save directory: checkpoints/agent_name/shape/
     save_path = os.path.join(save_path, agent_name, shape)
@@ -42,10 +43,13 @@ def train(agent_name="ppo", shape='circle', reward="old", render='GUI', total_ti
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
+    # Define unique log name based on params
+    log_name = f"monitor_{agent_name}_{shape}_{reward}_{timestamp}"
+    log_path = os.path.join(log_dir, log_name)
+    
     # Create the environment and wrap it with Monitor to log performance
     env = PegInHoleGymEnv(shape_type=shape, reward_typ=reward, render_mode=render)
-    env = Monitor(env, log_dir)  # Monitor the environment and store logs in the specified directory
-
+    env = Monitor(env, log_path)  # Monitor the environment and store logs in the specified directory
     # Choose the algorithm
     agent_name = agent_name.lower()
     model_kwargs = {}
@@ -93,9 +97,9 @@ def train(agent_name="ppo", shape='circle', reward="old", render='GUI', total_ti
     return model, env
 
 #test model 1000 times episode
-def test_rl_model(agent_name, shape='circle'):
+def test_rl_model(agent_name, shape='circle', reward="old", render='DIRECT'):
     # Create the environment
-    env = PegInHoleGymEnv(shape_type=shape)
+    env = PegInHoleGymEnv(shape_type=shape, reward_typ=reward, render_mode=render)
 
     # Choose the algorithm
     if agent_name == "ppo":
