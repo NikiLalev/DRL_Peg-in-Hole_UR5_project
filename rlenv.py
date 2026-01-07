@@ -124,7 +124,7 @@ class PegInHoleGymEnv(gym.Env):
         y = random.uniform(0, 0.1)
         z = 0.65
         self.target_pos = [x, y, z]
-        hole_orn = p.getQuaternionFromEuler([0, 0, 0]) 
+        hole_orn = p.getQuaternionFromEuler([0, 0, -1.57079632679])
 
         # Load specific box URDF
         if self.shape_type == "square":

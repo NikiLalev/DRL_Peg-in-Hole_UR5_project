@@ -113,7 +113,7 @@ def test_rl_model(agent_name, shape='circle'):
 
     # Load the trained model
     model = model_class(policy, env, verbose=1, device="cuda")
-    model = model.load(f"./checkpoints/{agent_name}/{shape}/2026-01-06_16-50-53_150000_steps")
+    model = model.load(f"./checkpoints/{agent_name}/circle/2026-01-06_16-50-53_150000_steps")
 
     success_count = 0
     failure_count = 0
