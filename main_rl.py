@@ -77,7 +77,7 @@ def train(agent_name="ppo", shape='circle', reward="old", total_timesteps=100_00
 
     # Create checkpoint callback
     checkpoint_callback = CheckpointCallback(save_freq=save_freq, save_path=save_path,
-                                             name_prefix=timestamp)
+                                             name_prefix=f"{timestamp}_{reward}")
 
     # Train the model and save checkpoints
     model.learn(total_timesteps=total_timesteps, callback=checkpoint_callback)
@@ -86,7 +86,7 @@ def train(agent_name="ppo", shape='circle', reward="old", total_timesteps=100_00
     model.save_replay_buffer(os.path.join(save_path, "final_replay_buffer.pkl"))
 
     # Save the final model after training
-    model.save(os.path.join(save_path, f"{agent_name}_final_model"))
+    model.save(os.path.join(save_path, f"{timestamp}_{agent_name}_final_model"))
 
     return model, env
 
