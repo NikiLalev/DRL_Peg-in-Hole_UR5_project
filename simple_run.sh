@@ -6,6 +6,7 @@ SAVE_FREQ=50000
 POLICY=sac
 SHAPE=hexagon
 REWARD=old
+RENDER=false
 
 echo "Training $POLICY on shape=$SHAPE with reward=$REWARD"
 
@@ -15,4 +16,5 @@ python main_rl.py \
     --timesteps $TIMESTEPS \
     --save_freq $SAVE_FREQ \
     --shape $SHAPE \
-    --reward $REWARD
+    --reward $REWARD \
+    --render $RENDER
