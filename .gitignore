@@ -1,7 +1,6 @@
 REGNet*/
 heatmap.png
 temp_result.npy
-logs/
 pred*/
 .history/
 .vscode/

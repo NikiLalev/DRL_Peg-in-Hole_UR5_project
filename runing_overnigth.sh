@@ -4,7 +4,7 @@ TIMESTEPS=250000
 SAVE_FREQ=50000
 POLICY=sac
 
-for SHAPE in circle square
+for SHAPE in circle square hexagon triangle
 do
   for REWARD in old new
   do

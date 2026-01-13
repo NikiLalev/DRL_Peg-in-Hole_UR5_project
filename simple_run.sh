@@ -1,12 +1,13 @@
 #!/bin/bash
 
 MODE=test
-TIMESTEPS=250000
-SAVE_FREQ=50000
+TIMESTEPS=50000
+SAVE_FREQ=25000
 POLICY=sac
-SHAPE=hexagon
+SHAPE=triangle
 REWARD=old
-RENDER=false
+
+RENDER=GUI
 
 echo "Training $POLICY on shape=$SHAPE with reward=$REWARD"
 

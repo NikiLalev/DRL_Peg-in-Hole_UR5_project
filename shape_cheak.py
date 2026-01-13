@@ -1,6 +1,6 @@
 import numpy as np
 
-data = np.load("peg_in_hole_iql_dataset.npz")
+data = np.load("./checkpoints/sac/circle/peg_in_hole_iql_dataset.npz", allow_pickle=True)
 
 print("Keys in npz:", data.files)
 

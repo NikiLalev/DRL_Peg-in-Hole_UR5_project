@@ -89,7 +89,7 @@ def train(agent_name="ppo", shape='circle', reward="old", render='GUI', total_ti
     model.learn(total_timesteps=total_timesteps, callback=checkpoint_callback)
 
     # Save data for IQL
-    model.save_replay_buffer(os.path.join(save_path, f"{timestamp}_{agent_name}_final_replay_buffer.pkl"))
+    model.save_replay_buffer(os.path.join(save_path, f"{timestamp}_{agent_name}_replay_buffer.pkl"))
 
     # Save the final model after training
     model.save(os.path.join(save_path, f"{timestamp}_{agent_name}_final_model"))
@@ -97,7 +97,7 @@ def train(agent_name="ppo", shape='circle', reward="old", render='GUI', total_ti
     return model, env
 
 #test model 1000 times episode
-def test_rl_model(agent_name, shape='circle', reward="old", render='DIRECT'):
+def test_rl_model(agent_name, shape='circle', reward="old", render='GUI'):
     # Create the environment
     env = PegInHoleGymEnv(shape_type=shape, reward_typ=reward, render_mode=render)
 
@@ -119,7 +119,7 @@ def test_rl_model(agent_name, shape='circle', reward="old", render='DIRECT'):
 
     # Load the trained model
     model = model_class(policy, env, verbose=1, device="cuda")
-    model = model.load(f"./checkpoints/{agent_name}/circle/2026-01-06_16-50-53_150000_steps")
+    model = model.load(f"./checkpoints/sac/triangle/2026-01-08_17-54-42_sac_final_model.zip")
 
     success_count = 0
     failure_count = 0
@@ -212,7 +212,7 @@ if __name__ == "__main__":
 
     elif args.run == 'test':
         # Test the trained RL model
-        test_rl_model(agent_name, shape=args.shape)
+        test_rl_model(agent_name, shape=args.shape, reward=args.reward, render=args.render)
 
     elif args.run == 'plot':
         # # Plot the reward training graph
