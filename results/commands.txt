@@ -96,3 +96,22 @@ python test_runner.py --checkpoint "checkpoints/sac/triangle/2026-01-08_14-19-42
 python test_runner.py --checkpoint "checkpoints/sac/triangle/2026-01-08_14-19-42_old_200000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/test_sac_triangle_200000.csv"
 
 python test_runner.py --checkpoint "checkpoints/sac/triangle/2026-01-08_14-19-42_old_250000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/test_sac_triangle_250000.csv"
+
+################################
+MIXING
+
+1) Circle Policy with Hexagon, Square and Triangle
+
+python test_runner.py --checkpoint "checkpoints/sac/circle/2026-01-07_16-54-59_old_50000_steps.zip" --agent sac --shape hexagon --reward old --episodes 100 --output "results/cross_sac_circle50k_on_hexagon.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/circle/2026-01-07_16-54-59_old_50000_steps.zip" --agent sac --shape square --reward old --episodes 100 --output "results/cross_sac_circle50k_on_square.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/circle/2026-01-07_16-54-59_old_50000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/cross_sac_circle50k_on_triangle.csv"
+
+2) Hexagon Policy with Circle, Square and Triangle
+
+python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_07-10-29_old_250000_steps.zip" --agent sac --shape circle --reward old --episodes 100 --output "results/cross_sac_hex250k_on_circle.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_07-10-29_old_250000_steps.zip" --agent sac --shape square --reward old --episodes 100 --output "results/cross_sac_hex250k_on_square.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_07-10-29_old_250000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/cross_sac_hex250k_on_triangle.csv"
