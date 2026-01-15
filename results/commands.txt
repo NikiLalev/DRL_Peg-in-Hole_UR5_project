@@ -115,3 +115,51 @@ python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_07-10-29_
 python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_07-10-29_old_250000_steps.zip" --agent sac --shape square --reward old --episodes 100 --output "results/cross_sac_hex250k_on_square.csv"
 
 python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_07-10-29_old_250000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/cross_sac_hex250k_on_triangle.csv"
+
+################################
+Testing with the New Reward but same insertion / collision logic for consistency
+
+1. SAC Circle
+python test_runner.py --checkpoint "checkpoints/sac/circle/2026-01-07_20-28-08_new_50000_steps.zip" --agent sac --shape circle --reward old --episodes 100 --output "results/test_sac_circle_new_50000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/circle/2026-01-07_20-28-08_new_100000_steps.zip" --agent sac --shape circle --reward old --episodes 100 --output "results/test_sac_circle_new_100000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/circle/2026-01-07_20-28-08_new_150000_steps.zip" --agent sac --shape circle --reward old --episodes 100 --output "results/test_sac_circle_new_150000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/circle/2026-01-07_20-28-08_new_200000_steps.zip" --agent sac --shape circle --reward old --episodes 100 --output "results/test_sac_circle_new_200000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/circle/2026-01-07_20-28-08_new_250000_steps.zip" --agent sac --shape circle --reward old --episodes 100 --output "results/test_sac_circle_new_250000.csv"
+
+################################
+2. SAC Hexagon
+python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_10-44-53_new_50000_steps.zip" --agent sac --shape hexagon --reward old --episodes 100 --output "results/test_sac_hexagon_new_50000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_10-44-53_new_100000_steps.zip" --agent sac --shape hexagon --reward old --episodes 100 --output "results/test_sac_hexagon_new_100000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_10-44-53_new_150000_steps.zip" --agent sac --shape hexagon --reward old --episodes 100 --output "results/test_sac_hexagon_new_150000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_10-44-53_new_200000_steps.zip" --agent sac --shape hexagon --reward old --episodes 100 --output "results/test_sac_hexagon_new_200000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/hexagon/2026-01-08_10-44-53_new_250000_steps.zip" --agent sac --shape hexagon --reward old --episodes 100 --output "results/test_sac_hexagon_new_250000.csv"
+################################
+3. SAC Square
+python test_runner.py --checkpoint "checkpoints/sac/square/2026-01-08_03-35-29_new_50000_steps.zip" --agent sac --shape square --reward old --episodes 100 --output "results/test_sac_square_new_50000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/square/2026-01-08_03-35-29_new_100000_steps.zip" --agent sac --shape square --reward old --episodes 100 --output "results/test_sac_square_new_100000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/square/2026-01-08_03-35-29_new_150000_steps.zip" --agent sac --shape square --reward old --episodes 100 --output "results/test_sac_square_new_150000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/square/2026-01-08_03-35-29_new_200000_steps.zip" --agent sac --shape square --reward old --episodes 100 --output "results/test_sac_square_new_200000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/square/2026-01-08_03-35-29_new_250000_steps.zip" --agent sac --shape square --reward old --episodes 100 --output "results/test_sac_square_new_250000.csv"
+################################
+4. SAC Triangle
+python test_runner.py --checkpoint "checkpoints/sac/triangle/2026-01-08_17-54-42_new_50000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/test_sac_triangle_new_50000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/triangle/2026-01-08_17-54-42_new_100000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/test_sac_triangle_new_100000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/triangle/2026-01-08_17-54-42_new_150000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/test_sac_triangle_new_150000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/triangle/2026-01-08_17-54-42_new_200000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/test_sac_triangle_new_200000.csv"
+
+python test_runner.py --checkpoint "checkpoints/sac/triangle/2026-01-08_17-54-42_new_250000_steps.zip" --agent sac --shape triangle --reward old --episodes 100 --output "results/test_sac_triangle_new_250000.csv"
